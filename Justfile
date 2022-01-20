@@ -1,5 +1,5 @@
 # Version (1.5.0)
-VERSION := 150
+VERSION := "150"
 
 # Wrapper for scripts/genUkingHeader.py
 header:
@@ -37,4 +37,4 @@ cleanall: clean
 
 # Wrapper for scripts/deploy.py
 deploy IP:
-    python3 scripts/ftpDeploy.py {{IP}} {{VERSIOn}}
+    python3 scripts/ftpDeploy.py {{IP}} {{VERSION}}
