@@ -23,5 +23,6 @@ lib/
 *.ld
 skyline_patch*/
 scripts/.idea/*
+
 !exported.txt
 !linkerscripts/application.ld
