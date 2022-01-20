@@ -1,3 +1,4 @@
+# Patch the original NPDM file to enable sys calls
 import struct, binascii
 
 HEADER_SIZE = 0x70

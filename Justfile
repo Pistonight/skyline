@@ -1,9 +1,9 @@
 # Version (1.5.0)
 VERSION := "150"
 
-# Wrapper for scripts/genUkingHeader.py
+# Wrapper for scripts/genHeader.py
 header:
-    python3 scripts/genUkingHeader.py
+    python3 scripts/genHeader.py
 
 # Wrapper for scripts/genLinkerScript.py 
 ldscript:
@@ -31,7 +31,7 @@ clean:
 
 # Clean the build output and all generated files
 cleanall: clean
-    rm -f include/uking/functions.hpp
+    rm -f include/ukr{{VERSION}}.hpp
     rm -f linkerscripts/syms{{VERSION}}.ld
     rm -f skyline{{VERSION}}.npdm
 
