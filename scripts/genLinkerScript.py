@@ -15,9 +15,8 @@ CUSTOM_HEADER = """
 # The paths to search for LinkerHints
 INCLUDE = [
     "include/ukr150.hpp",
-    # "include/uking/links.hpp",
-    # "include/sead",
-    # "include/agl"
+    "include/sead",
+    "include/agl"
 ]
 
 # LinkerHints
