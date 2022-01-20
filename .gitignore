@@ -20,7 +20,8 @@ build*/
 debug/
 release/
 lib/
-linkerscripts/symstemp.ld
+*.ld
 skyline_patch*/
 scripts/.idea/*
 !exported.txt
+!linkerscripts/application.ld
