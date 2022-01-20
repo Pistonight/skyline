@@ -27,7 +27,7 @@ patch:
 # Cleans the elf and ips
 clean:
     make clean
-    rm -f skyline{{VERSION}}.ips
+    rm -f *.ips
 
 # Clean the build output and all generated files
 cleanall: clean
@@ -35,6 +35,14 @@ cleanall: clean
     rm -f linkerscripts/syms{{VERSION}}.ld
     rm -f skyline{{VERSION}}.npdm
 
-# Wrapper for scripts/deploy.py
+# Wrapper for scripts/ftpDeploy.py
 deploy IP:
     python3 scripts/ftpDeploy.py {{IP}} {{VERSION}}
+
+# Remove deployment from switch
+cleandeploy IP:
+    @echo "Not Implemented!"
+
+# Get crash report from switch
+crash IP:
+    @echo "Not Implemented!"
