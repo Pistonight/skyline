@@ -35,7 +35,7 @@ TARGET		?=	$(notdir $(CURDIR))$(CROSSVER)
 BUILD		?=	build$(CROSSVER)
 SOURCES		:= 	source $(filter-out %.c %.cpp %.s,$(wildcard source/* source/*/* source/*/*/* source/*/*/*/*))
 DATA		:=	data
-INCLUDES	:=	include libs/libeiffel/include
+INCLUDES	:=	include libs/libeiffel/include libs/sead/include libs/agl/include
 
 #---------------------------------------------------------------------------------
 # options for code generation

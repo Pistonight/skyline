@@ -1,3 +1,9 @@
 [submodule "libs/libeiffel"]
 	path = libs/libeiffel
 	url = https://github.com/skyline-dev/libeiffel.git
+[submodule "libs/sead"]
+	path = libs/sead
+	url = https://github.com/open-ead/sead
+[submodule "libs/agl"]
+	path = libs/agl
+	url = https://github.com/open-ead/agl

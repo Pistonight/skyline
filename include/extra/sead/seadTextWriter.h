@@ -1,18 +1,16 @@
-/**
- * @file viewport.h
- * @brief Basic Viewport class.
- */
-
 #pragma once
 
-#include "types.h"
-#include "sead/color.h"
-#include "sead/bound.h"
-#include "sead/projection.h"
-
+#include <gfx/seadColor.h>
+#include <gfx/seadDrawContext.h>
+#include <extra/sead/seadVector.h>
 
 namespace sead
 {
+    class Viewport;
+    class Camera;
+    class Projection;
+    template <typename T> class BoundBox2;
+
     class TextWriter
     {
         public:
@@ -23,7 +21,6 @@ namespace sead
             void printf(char const*, ...);
             /* LinkerHints 0x00b1f868 _ZN4sead10TextWriter6printfEPKDsz sead::TextWriter::printf */
             void printf(char16_t const*, ...);
-            /* Disabled LinkerHints 0x00b1f9a8 _ZN4sead10TextWriter22setScaleFromFontHeightEf sead::TextWriter::setScaleFromFontHeight */
             void setScaleFromFontHeight(float);
             void beginDraw();
             /* LinkerHints 0x00b1f7b8 _ZN4sead10TextWriter13setupGraphicsEPNS_11DrawContextE sead::TextWriter::setupGraphics */
