@@ -15,6 +15,7 @@
 *.pchtxt
 *.ips
 *.npdm
+*.log
 .vscode/
 build*/
 debug/
