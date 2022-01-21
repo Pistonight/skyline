@@ -101,7 +101,7 @@ void skyline_main() {
     //A64HookFunction(reinterpret_cast<void*>(ukingraw::ukr_ZNK5uking2ui16PauseMenuDataMgr15hasRitoSoulPlusEv), reinterpret_cast<void*>(ukingimpl::ReturnTrue), NULL);
 
     // BOTW: Call this function so it's not removed by the linker
-    ksys_skyline_render(nullptr, nullptr);
+    ksys_skyline_render(nullptr);
 
     // hook to prevent the game from double mounting romfs
     A64HookFunction(reinterpret_cast<void*>(nn::fs::MountRom), reinterpret_cast<void*>(handleNnFsMountRom),

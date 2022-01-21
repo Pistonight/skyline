@@ -90,7 +90,7 @@ def resolveAddressAndTarget(target, symbolStr):
     # if symbol is in skyline
     funcStr = symbolStr + r'\('
     try:
-        addrInSkyline = getSymAddrFromMap("skyline", funcStr, symbolStr)
+        addrInSkyline = getSkylineSymAddr("skyline", funcStr, symbolStr)
         # if no exception, then symbolStr is found is skyline
         print("Resolved Skyline Symbol", symbolStr, "=", addrInSkyline)
         resolvedAddr += addrInSkyline
@@ -99,6 +99,9 @@ def resolveAddressAndTarget(target, symbolStr):
         pass
 
     # BOTW: symbolStr has to be an address for simplicify
+    if not symbolStr.startswith("0x"):
+        print("Undefined symbol:", symbolStr)
+        sys.exit(-1)
 
     try:
         resolvedAddr += int(symbolStr, 16)
@@ -160,7 +163,12 @@ def addPatchFromFile(patchFilePath):
                     line = next(fileLinesIter)
                 except StopIteration:
                     break
-            line = line.split('/', 1)[0].strip()
+
+            # Strip off comments
+            line = line.split(';', 1)[0].strip()
+            # Skip empty lines
+            if len(line) == 0:
+                continue
 
             # if is patch variable line, e.g. [version=310]
             patchVarLineMatch = re.match(r'\[(.+)\]', line)
