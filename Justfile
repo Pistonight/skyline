@@ -2,6 +2,8 @@
 VERSION := "150"
 IP_FILE := "consoleip.txt"
 
+default: build
+
 # Wrapper for scripts/genHeader.py
 header:
     python3 scripts/genHeader.py
@@ -48,19 +50,17 @@ cleanall: clean
     rm -f skyline{{VERSION}}.npdm
     rm -f {{IP_FILE}}
     rm -rf romfsmin/
+    rm -rf crash_reports/
 
 setip IP:
     echo {{IP}} > {{IP_FILE}}
 
-# Wrapper for scripts/ftpAction.py deploy
-deploy:
-    @if [ ! -f {{IP_FILE}} ]; then echo "Error: Please set your console IP with\n     just setip <IP>"; exit; else python3 scripts/ftpAction.py deploy {{VERSION}} $(cat {{IP_FILE}}); fi 
+# Wrapper for scripts/ftpUtil.py
+# FTP_OPTION can be:
+# deploy: copy npdm, nso and ips patch to console
+# clean: remove nso and ips patch from console (not npdm)
+# report: get crash reports from console (also deletes them from console)
+ftp FTP_OPTION:
+    @if [ ! -f {{IP_FILE}} ]; then echo "Error: Please set your console IP with\n     just setip <IP>"; exit; else python3 scripts/ftpUtil.py {{FTP_OPTION}} {{VERSION}} $(cat {{IP_FILE}}); fi 
 
-# Remove deployment from switch
-cleandeploy IP:
-    @echo "Not Implemented!"
-
-# Get crash report from switch
-mvcrash IP:
-    @echo "Not Implemented!"
 

@@ -25,7 +25,9 @@ lib/
 skyline_patch*/
 romfs*/
 scripts/.idea/*
+crash_reports/
 include/ukr*.hpp
 !exported.txt
 !linkerscripts/application.ld
 !v160_v150_change.txt
+!version.txt

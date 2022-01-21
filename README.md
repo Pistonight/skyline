@@ -80,7 +80,24 @@ Also you need to patch the NPDM file (`main.npdm`) for sys calls.
 
 ### Building
 Run `just` or `just build` to build the project. If you only want to build the skyline nso or the ips patch, run `just nso` or `just ips`
+(If the nso doesn't rebuild after regenrating linker script, run `just rebuild`)
 
+### Install
+#### FTP Install
+There is a script to install the patch on your console via FTP.
 
+If you don't have ftpd available on your console, skip to the next section
+1. Generate the patched NPDM and build both nso and ips patch (see above)
+2. Start ftpd on console
+3. Run `just setip <console_ip>`. `<console_ip>` should be the ip address you see on ftpd. (No need to rerun this unless ip changes)
+4. Run `just ftp deploy` to copy over the files 
+
+If you want to remove the installation, run `just ftp clean`
+
+#### Manual Install
+
+1. Copy `skyline150.nso` to `/atmosphere/contents/01007EF00011E000/exefs` and rename it `subsdk9`
+2. Copy `skyline150.npdm` to `/atmosphere/contents/01007EF00011E000/exefs` and rename it `main.npdm`
+3. Copy `16A91992BBA71201E98756F3BC8F5D2F.ips` to `/atmosphere/exefs_patches/skylinebotw`
 
 

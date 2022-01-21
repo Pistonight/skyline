@@ -70,9 +70,55 @@ class FtpWrapper:
         print(f'> STOR {sdPath}')
         self.ftp.storbinary(f'STOR {sdPath}', open(localPath, 'rb'))
 
-    def deleteFile(self,sdPath):
-        print(f'> DELETE {sdPath}')
-        self.ftp.delete(sdPath)
+    def deleteFile(self, sdPath):
+        try:
+            self.ftp.delete(sdPath)
+            print(f'> DELE {sdPath}')
+        except:
+            return
+
+    def deleteDirectory(self, sdPath):
+        try:
+            self.ftp.cwd(sdPath)
+        except:
+            return
+
+        file_list= []
+
+        self.ftp.retrlines('LIST', lambda x: file_list.append(x.split()))
+        for info in file_list:
+            ls_type, name = info[0], info[-1]
+            if ls_type.startswith('d'):
+                self.deleteDirectory(os.path.join(sdPath, name))
+            else:
+                self.deleteFile(os.path.join(sdPath, name))
+
+        print(f'> RMD {sdPath}')
+        self.ftp.rmd(sdPath)
+
+    def retriveFile(self, localPath, sdPath):
+        print(f"Receiving {localPath}")
+        with open(localPath, "wb+") as file:
+            self.ftp.retrbinary(f"RETR {sdPath}", file.write)
+            print(f"> RETR {sdPath}")
+
+    def retriveDirectory(self, localPath, sdPath):
+        os.makedirs(localPath, exist_ok=True)
+
+        try:
+            self.ftp.cwd(sdPath)
+        except:
+            return
+
+        file_list= []
+
+        self.ftp.retrlines('LIST', lambda x: file_list.append(x.split()))
+        for info in file_list:
+            ls_type, name = info[0], info[-1]
+            if ls_type.startswith('d'):
+                self.retriveDirectory(os.path.join(localPath, name), os.path.join(sdPath, name))
+            else:
+                self.retriveFile(os.path.join(localPath, name), os.path.join(sdPath, name))
 
 def scanForPatches():
     patches = []
@@ -84,6 +130,7 @@ def scanForPatches():
 
 # Deploy
 def deploy(ftpw):
+    # IPS Patches
     patches = scanForPatches()
     if len(patches) > 0:
         ftpw.ensurePath(["atmosphere", "exefs_patches", PATCH_DIRNAME])
@@ -93,14 +140,26 @@ def deploy(ftpw):
             sdPath = f'/atmosphere/exefs_patches/{PATCH_DIRNAME}/{patchPath}'
             ftpw.sendFile(patchPath, sdPath)
 
+    # exefs
     ftpw.ensurePath(["atmosphere", "contents", "01007EF00011E000", "exefs"])
     binaryPath = f'{os.path.basename(os.getcwd())}{version}.nso'
-    sdPath = f'/atmosphere/contents/01007EF00011E000/exefs/subsdk9'
+    sdPath = '/atmosphere/contents/01007EF00011E000/exefs/subsdk9'
     ftpw.sendFile(binaryPath, sdPath)
 
     metaPath = f'{os.path.basename(os.getcwd())}{version}.npdm'
     sdPath = '/atmosphere/contents/01007EF00011E000/exefs/main.npdm'
     ftpw.sendFile(metaPath, sdPath)
+
+# Clean
+def clean(ftpw):
+    ftpw.deleteDirectory(f"/atmosphere/exefs_patches/{PATCH_DIRNAME}")
+    ftpw.deleteFile('/atmosphere/contents/01007EF00011E000/exefs/subsdk9')
+
+# Get crash report
+def report(ftpw):
+    ftpw.ensurePath(["atmosphere", "crash_reports"])
+    ftpw.retriveDirectory("crash_reports", "/atmosphere/crash_reports")
+    ftpw.deleteDirectory("/atmosphere/crash_reports")
 
 command = sys.argv[1]
 version = sys.argv[2]
@@ -121,5 +180,9 @@ print('Connected!')
 
 if command == "deploy":
     deploy(ftpw)
+elif command == "clean":
+    clean(ftpw)
+elif command == "report":
+    report(ftpw)
 
 
