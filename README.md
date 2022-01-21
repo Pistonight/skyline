@@ -1,7 +1,9 @@
 # Skyline for BOTW
 A patch for Breath of the Wild (Switch) that adds debug capability to the executable. 
 
-This project is based on [skyline](https://github.com/skyline-dev/skyline)
+This project is based on:
+ - [skyline-dev/skyline](https://github.com/skyline-dev/skyline) for hooking and patching
+ - [zeldaret/botw](https://github.com/zeldaret/botw) for linking to botw
 
 **This repository does not contain game assets or RomFS content and cannot be used to play Breath of the Wild.**
 
