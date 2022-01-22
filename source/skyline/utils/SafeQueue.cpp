@@ -18,7 +18,7 @@ SafeTaskQueue::SafeTaskQueue(u64 count) : SafeQueue::SafeQueue(count) {}
 void SafeTaskQueue::startThread(s32 priority, s32 core, u64 stackSize) {
     skyline::logger::s_Instance->Log("[SafeTaskQueue] Starting thread.\n");
     void* stack = memalign(0x1000, stackSize);
-    Result rc = nn::os::CreateThread(&thread, entrypoint, this, stack, stackSize, priority, core);
+    Result rc = RESULT_CODE(nn::os::CreateThread(&thread, entrypoint, this, stack, stackSize, priority, core));
     if (R_FAILED(rc)) {
         skyline::logger::s_Instance->LogFormat("[SafeTaskQueue] Failed to create thread (0x%x).", rc);
     }

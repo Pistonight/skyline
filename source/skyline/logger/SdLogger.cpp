@@ -8,16 +8,17 @@ s64 offset;
 
 SdLogger::SdLogger(std::string path) {
     nn::fs::DirectoryEntryType type;
-    Result rc = nn::fs::GetEntryType(&type, path.c_str());
+    nn::Result result = nn::fs::GetEntryType(&type, path.c_str());
+    auto rc = RESULT_CODE(result);
 
     if (rc == 0x202) {  // Path does not exist
-        rc = nn::fs::CreateFile(path.c_str(), 0);
+        rc = RESULT_CODE(nn::fs::CreateFile(path.c_str(), 0));
     } else if (R_FAILED(rc))
         return;
 
     if (type == nn::fs::DirectoryEntryType_Directory) return;
 
-    R_ERRORONFAIL(nn::fs::OpenFile(&fileHandle, path.c_str(), nn::fs::OpenMode_ReadWrite | nn::fs::OpenMode_Append));
+    R_ERRORONFAIL(RESULT_CODE(nn::fs::OpenFile(&fileHandle, path.c_str(), nn::fs::OpenMode_ReadWrite | nn::fs::OpenMode_Append)));
 }
 
 void SdLogger::Initialize() {

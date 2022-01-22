@@ -5,6 +5,8 @@
 #include <memory>
 #include <string>
 
+#include <extra/nn/firmware.h>
+
 #include "nn/fs.h"
 #include "nn/settings.h"
 #include "operator.h"

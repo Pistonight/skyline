@@ -1,7 +1,10 @@
 #include "main.hpp"
 
+#include <extra/nn/err.h>
+
 #include "skyline/logger/TcpLogger.hpp"
 #include "skyline/utils/ipc.hpp"
+#include "skyline/utils/cpputils.hpp"
 
 #include "uking/Debug/DebugRender.hpp"
 
@@ -34,12 +37,9 @@ static skyline::utils::Task* after_romfs_task = new skyline::utils::Task{[]() {
     // nn::fs::GetFileSize(&file_size, handle);
     // nn::fs::CloseFile(handle);
 
-    Result rc = nn::fs::MountSdCardForDebug("sd");
+    nn::Result rc = nn::fs::MountSdCardForDebug("sd");
     skyline::logger::s_Instance->LogFormat("[skyline_main] Mounted SD (0x%x)", rc);
 
-    // load plugins
-    //Crashes on BOTW so not going to do that
-    //skyline::plugin::Manager::LoadPlugins();
 }};
 
 void stub() {}

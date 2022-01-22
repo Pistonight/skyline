@@ -8,7 +8,7 @@ namespace skyline::efl {
 EflSlService::EflSlService() : m_initSuccessful(false) {
     logger::s_Instance->Log("[EflSlService] Initializing...\n");
     auto rc = utils::nnServiceCreate(&m_service, EIFFEL_SKYLINE_SERVICE_NAME);
-    if (R_SUCCEEDED(rc)) {
+    if (R_SUCCEEDED(RESULT_CODE(rc))) {
         m_initSuccessful = true;
         logger::s_Instance->LogFormat("[EflSlService] Initialized");
     } else {

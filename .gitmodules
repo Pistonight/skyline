@@ -7,3 +7,6 @@
 [submodule "libs/agl"]
 	path = libs/agl
 	url = https://github.com/open-ead/agl
+[submodule "libs/NintendoSDK"]
+	path = libs/NintendoSDK
+	url = https://github.com/open-ead/nnheaders

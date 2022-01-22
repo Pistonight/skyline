@@ -4,7 +4,7 @@
 #include <queue>
 #include <string>
 
-#include "nn/os.hpp"
+#include "nn/os.h"
 #include "types.h"
 
 namespace skyline::logger {

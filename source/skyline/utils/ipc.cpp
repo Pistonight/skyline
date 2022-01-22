@@ -14,7 +14,7 @@ extern "C" {
 
 namespace skyline::utils {
 
-Result nnServiceCreate(Service* srv, const char* name) {
+nn::Result nnServiceCreate(Service* srv, const char* name) {
     // open session
     nn::sf::hipc::InitializeHipcServiceResolution();
     nn::svc::Handle svcHandle;
@@ -24,10 +24,18 @@ Result nnServiceCreate(Service* srv, const char* name) {
     void* base = nn::sf::hipc::GetMessageBufferOnTls();
 
     cmifMakeControlRequest(base, 3, 0);
-    R_TRY(nn::sf::hipc::SendSyncRequest(svcHandle, base, 0x100));
+    //TODO fix manually expanded macro
+    auto r = nn::sf::hipc::SendSyncRequest(svcHandle, base, 0x100);
+    if(R_FAILED(RESULT_CODE(r))){
+        return r;
+    }
 
     CmifResponse resp = {};
-    R_TRY(cmifParseResponse(&resp, base, false, sizeof(u16)));
+    //TODO fix manually expanded macro
+    const auto r2 = cmifParseResponse(&resp, base, false, sizeof(u16));
+    if(R_FAILED(r2)){
+        return nn::result::detail::ResultInternalAccessor::ConstructResult(r2);
+    }
 
     // build srv obj
     srv->session = svcHandle.handle;
@@ -35,7 +43,7 @@ Result nnServiceCreate(Service* srv, const char* name) {
     srv->object_id = 0;
     srv->pointer_buffer_size = *(u16*)resp.data;
 
-    return 0;
+    return nn::ResultSuccess();
 }
 
 void nnServiceClose(Service* s) {
@@ -49,7 +57,7 @@ void nnServiceClose(Service* s) {
     *s = (Service){};
 }
 
-Result Ipc::getOwnProcessHandle(Handle* handleOut) {
+nn::Result Ipc::getOwnProcessHandle(Handle* handleOut) {
     Service srv;
     u64 pid;
 
@@ -78,6 +86,6 @@ Result Ipc::getOwnProcessHandle(Handle* handleOut) {
         }
     }
 
-    return 0;
+    return nn::ResultSuccess();
 }
 }  // namespace skyline::utils

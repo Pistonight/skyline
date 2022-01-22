@@ -63,4 +63,9 @@ setip IP:
 ftp FTP_OPTION:
     @if [ ! -f {{IP_FILE}} ]; then echo "Error: Please set your console IP with\n     just setip <IP>"; exit; else python3 scripts/ftpUtil.py {{FTP_OPTION}} {{VERSION}} $(cat {{IP_FILE}}); fi 
 
+getbotw PATH:
+    curl https://raw.githubusercontent.com/zeldaret/botw/master/src/{{PATH}} > include/uking/{{PATH}}
 
+findsym SYMBOL:
+    grep "{{SYMBOL}}" build{{VERSION}}/skyline{{VERSION}}.lst
+    grep "{{SYMBOL}}" build{{VERSION}}/skyline{{VERSION}}.map

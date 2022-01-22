@@ -6,6 +6,7 @@
 
 #include "mem.h"
 #include "nn/os.h"
+#include <extra/nn/oseventclearmode.h>
 #include "skyline/logger/Logger.hpp"
 #include "types.h"
 

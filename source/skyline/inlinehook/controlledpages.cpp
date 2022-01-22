@@ -1,6 +1,6 @@
 #include "skyline/inlinehook/controlledpages.hpp"
 
-#include "nn/os.hpp"
+#include "nn/os.h"
 #include "skyline/utils/cpputils.hpp"
 
 #ifdef __cplusplus

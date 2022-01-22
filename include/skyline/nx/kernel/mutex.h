@@ -5,9 +5,8 @@
  * @copyright libnx Authors
  */
 #pragma once
-#include <sys/lock.h>
 
-#include "nn/os.h"
+#include "skyline/nnosh.h"
 #include "types.h"
 
 /// Mutex datatype, defined in newlib.

@@ -12,8 +12,8 @@
 ; textWriter [SP, #0x430]
 ; x [SP, #0x458]
 ; y [SP, #0x45C]
-0x00C662AC FMOV S8,  #2.0            ; Modify the offset so the text is more visible
-0x00C662B0 FMOV S9,  #-2.0
+0x00C662AC FMOV S8,  #1.0            ; Modify the offset so the text is more visible
+0x00C662B0 FMOV S9,  #-1.0
 0x00C662B4 FADD S10, S0, S9          ; x:S10 = -2
                                      ; y:S11 = -2
                                      ; Load Color = Black

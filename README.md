@@ -27,6 +27,9 @@ If you don't want to install `just`, you can open `Justfile` and execute those c
 |`just cleanall`|In addition to `clean`, also removes the generated files|
 |`just diffrom`|Compare 1.5.0 and 1.6.0 romfs and generates `v160_v150_change.txt`|
 |`just minrom`|Extracts the romfs files listed in `v160_v150_change.txt`|
+|`just ftp deploy`|Copies output files to console via ftp|
+|`just ftp clean`|Removes output nso and ips patch from console|
+|`just ftp report`|Downloads crash reports from console (also removes them from console)|
 
 # Setup
 ## Prerequisite

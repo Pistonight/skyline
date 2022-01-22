@@ -15,8 +15,8 @@ CUSTOM_HEADER = """
 # The paths to search for LinkerHints
 INCLUDE = [
     "include/ukr150.hpp",
-    "include/sead",
-    "include/agl"
+    "include/extra",
+    "include/uking"
 ]
 
 # LinkerHints
@@ -41,18 +41,24 @@ def scanFileForLinkerHints(ldLines, pathStr, headerFile):
     foundLinkerHintsCount = 0
     disabledCount = 0
     for line in headerLines:
-        parts = line.split()
-        if len(parts) >= 5 and parts[0] == "/*" and parts[1] == LINKER_HINTS:
-            addrStr = parts[2]
-            mangledName = parts[3]
-            comment = parts[4]
-            if comment == "*/":
-                comment = ""
+        line = line.strip()
+        parts = []
+        if line.startswith("//"):
+            parts = line[2:].split()
+        elif line.startswith("/*") and line.endswith("*/"):
+            parts = line[2:len(line)-2].split()
+        
+        if len(parts) >= 3 and parts[0] == LINKER_HINTS:
+            addrStr = parts[1]
+            mangledName = parts[2]
+            commen = ""
+            if len(parts) > 3:
+                comment = parts[3]
             if foundLinkerHintsCount == 0:
                 ldLines.append(f"/* {pathStr} Start */")
             addLinkerScriptLine(ldLines, addrStr, mangledName, comment)
             foundLinkerHintsCount+=1
-        elif len(parts) >= 3 and parts[0] == "/*" and parts[1] == DISABLED and parts[2] == LINKER_HINTS:
+        elif len(parts) >= 2 and parts[0] == DISABLED and parts[1] == LINKER_HINTS:
             disabledCount+=1
 
     if foundLinkerHintsCount != 0:
@@ -69,11 +75,15 @@ def scanPathForLinkerHints(ldLines, pathStr):
         with open(pathStr) as headerFile:
             return scanFileForLinkerHints(ldLines, pathStr, headerFile)
     elif os.path.isdir(pathStr):
+        print("Scanning Dir", pathStr)
         dirContent = os.listdir(pathStr)
         dirCount = 0
         for subPathName in dirContent:
             dirCount += scanPathForLinkerHints(ldLines, os.path.join(pathStr, subPathName))
         return dirCount
+    else:
+        print("Unknown path ", pathStr)
+        return 0
 
 ldLines = []
 count = 0

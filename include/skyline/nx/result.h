@@ -5,7 +5,8 @@
  */
 #pragma once
 #include "types.h"
-
+/// Get code from nn::Result TODO: fix the macros to use the functions of nn::Result
+#define RESULT_CODE(nnresult) (nnresult.GetInnerValueForDebug())
 /// Checks whether a result code indicates success.
 #define R_SUCCEEDED(res) ((res) == 0)
 /// Checks whether a result code indicates failure.

@@ -1,7 +1,8 @@
 #pragma once
 
-#include "nn/sf/hipc.h"
+#include "extra/nn/sf/hipc.h"
 #include "types.h"
+#include "nn/types.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -15,7 +16,7 @@ extern "C" {
 
 namespace skyline::utils {
 
-Result nnServiceCreate(Service* srv, const char* name);
+nn::Result nnServiceCreate(Service* srv, const char* name);
 void nnServiceClose(Service* s);
 
 NX_INLINE void* nnServiceMakeRequest(Service* s, u32 request_id, u32 context, u32 data_size, bool send_pid,
@@ -103,8 +104,8 @@ NX_INLINE Result nnServiceDispatchImpl(Service* s, u32 request_id, const void* i
 
     if (in_data_size) __builtin_memcpy(in, in_data, in_data_size);
 
-    R_TRY(nn::sf::hipc::SendSyncRequest(disp.target_session == INVALID_HANDLE ? s->session : disp.target_session, base,
-                                        0x100));
+    R_TRY(RESULT_CODE(nn::sf::hipc::SendSyncRequest(disp.target_session == INVALID_HANDLE ? s->session : disp.target_session, base,
+                                        0x100)));
 
     void* out = NULL;
     R_TRY(nnServiceParseResponse(&srv, out_data_size, &out, disp.out_num_objects, disp.out_objects,
@@ -131,7 +132,7 @@ NX_INLINE Result nnServiceDispatchImpl(Service* s, u32 request_id, const void* i
 
 class Ipc {
    public:
-    static Result getOwnProcessHandle(Handle*);
+    static nn::Result getOwnProcessHandle(Handle*);
 };
 
 }  // namespace skyline::utils

@@ -1,4 +1,4 @@
-#include "nvn/pfnc.h"
+#include <extra/nvn/pfnc.h>
 
 NVN_DEFPROC(nvnDeviceBuilderGetFlags);
 NVN_DEFPROC(nvnDeviceBuilderSetDefaults);
