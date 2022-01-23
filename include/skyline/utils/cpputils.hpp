@@ -5,8 +5,6 @@
 #include <memory>
 #include <string>
 
-#include <extra/nn/firmware.h>
-
 #include "nn/fs.h"
 #include "nn/settings.h"
 #include "operator.h"
@@ -24,17 +22,8 @@ extern u64 g_MainDataAddr;
 extern u64 g_MainBssAddr;
 extern u64 g_MainHeapAddr;
 
-extern nn::settings::system::FirmwareVersion g_CachedFwVer;
-
 void init();
 
-Result walkDirectory(std::string const&,
-                     std::function<void(nn::fs::DirectoryEntry const&, std::shared_ptr<std::string>)>,
-                     bool recursive = true);
-Result readEntireFile(std::string const&, void**, size_t*);
-Result readFile(std::string const&, s64, void*, size_t);
-Result writeFile(std::string const&, s64, void*, size_t);
-Result entryCount(u64*, std::string const&, nn::fs::DirectoryEntryType);
 extern "C" void* getRegionAddress(skyline::utils::region);
 
 struct Sha256Hash {

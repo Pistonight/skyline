@@ -78,7 +78,7 @@ def scanFileForLinkerHints(ldAddrData, ldSymbData, pathStr, headerFile):
             # addrStr can be another symbol
             if not addrStr.startswith("0x"):
                 # Add to symbdata to resolve later
-                ldSymbData[addrStr] = (mangledName, comment, pathStr)
+                ldSymbData.append((addrStr, mangledName, comment, pathStr))
             else:
                 ldAddrData[addrStr] = (mangledName, comment)
 
@@ -97,7 +97,7 @@ def scanPathForLinkerHints(ldAddrData, ldSymbData, pathStr):
 
 ldLines = []
 ldAddrData = {}
-ldSymbData = {}
+ldSymbData = []
 
 for pathStr in INCLUDE:
     scanPathForLinkerHints(ldAddrData, ldSymbData, pathStr)
@@ -116,8 +116,7 @@ print("Resolved", addrCount, "links to address")
 symbCount = 0
 funcCount = 0
 dataCount = 0
-for symbStr in ldSymbData:
-    mangledName, comment, pathStr = ldSymbData[symbStr]
+for symbStr, mangledName, comment, pathStr in ldSymbData:
     mangledSymbol = ""
     if symbStr.startswith(FUNC_ALIAS):
         funcName = symbStr[len(FUNC_ALIAS)-len(FUNC_PREFIX):]

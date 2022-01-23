@@ -5,21 +5,24 @@
  */
 #pragma once
 #include "types.h"
-/// Get code from nn::Result TODO: fix the macros to use the functions of nn::Result
-#define RESULT_CODE(nnresult) (nnresult.GetInnerValueForDebug())
+
+// Reimplemented R_TRY with nn::Result
+#define NN_ABORT_IF_FAIL(nnresult_expr) \
+({ \
+    const auto _tmp_r_try_result = nnresult_expr; \
+    if (_tmp_r_try_result.IsFailure()) { \
+        return _tmp_r_try_result; \
+    } \
+})
 /// Checks whether a result code indicates success.
 #define R_SUCCEEDED(res) ((res) == 0)
 /// Checks whether a result code indicates failure.
 #define R_FAILED(res) ((res) != 0)
-/// Returns the module ID of a result code.
-#define R_MODULE(res) ((res)&0x1FF)
-/// Returns the description of a result code.
-#define R_DESCRIPTION(res) (((res) >> 9) & 0x1FFF)
 /// Masks out unused bits in a result code, retrieving the actual value for use in comparisons.
 #define R_VALUE(res) ((res)&0x3FFFFF)
 
 /// Evaluates an expression that returns a result, and returns the result if it would fail.
-#define R_TRY(res_expr)                      \
+#define R_ABORT_IF_FAIL(res_expr)                      \
     ({                                       \
         const auto _tmp_r_try_rc = res_expr; \
         if (R_FAILED(_tmp_r_try_rc)) {       \

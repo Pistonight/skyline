@@ -91,6 +91,9 @@ typedef void (*ThreadFunc)(void*);
 #define R_ERRORONFAIL(r) \
     if (R_FAILED(r)) *((Result*)0x69) = r;
 
+#define NN_ERRORONFAIL(nnresult) \
+    if (( nnresult ).IsFailure()) *((Result*)0x69) = nnresult.GetInnerValueForDebug();
+
 #define R_UNLESS(expr, res)                  \
     ({                                       \
         if (!(expr)) {                       \

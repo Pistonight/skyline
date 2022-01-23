@@ -3,8 +3,8 @@
 0x007d6238 MOV X22, X21
 0x007d63d4 MOV X22, X21
 
-;;; Enable debug print code block
-0x00C661EC NOP
+;;; Patch a branch to be calling ComputeDebugData
+0x00C661EC BL ksys::skyline::ComputeDebugData
 
 ;;; Main Print Hack
 ; S8 = +offset
@@ -17,7 +17,7 @@
 0x00C662B4 FADD S10, S0, S9          ; x:S10 = -2
                                      ; y:S11 = -2
                                      ; Load Color = Black
-0x00C66300 BL ksys_skyline_render    ; Draw x = -2, y = -2
+0x00C66300 BL ksys::skyline::RenderDebugScreen    ; Draw x = -2, y = -2
 0x00C66308 FADD S12, S10, S8         ; x:S12 = 0
 0x00C6630C NOP                       ; 
 0x00C66310 NOP
@@ -28,7 +28,7 @@
 0x00C66324 NOP
 0x00C66328 NOP
 0x00C6632C NOP
-0x00C66344 BL ksys_skyline_render    ; Draw x = 0, y = -2
+0x00C66344 BL ksys::skyline::RenderDebugScreen    ; Draw x = 0, y = -2
 0x00C66348 FMOV S10, #0.0            ; Patch out the original line offset
 0x00C6634C FMOV S0,  S11             ; y:S0 = -2
 0x00C66374 NOP                       ; Skip string constructor
@@ -36,7 +36,7 @@
                                      ; y:S1 = -2
 0x00C66380 FMOV S12, S1              ; y:S12 = -2
 0x00C66384 FADD S11, S0, S8          ; x:S11 = 2
-0x00C663C8 BL ksys_skyline_render    ; Draw x = 2, y = -2
+0x00C663C8 BL ksys::skyline::RenderDebugScreen     ; Draw x = 2, y = -2
 0x00C663D0 NOP                       ; No x change
                                      ; y:S12 = 0
 0x00C663D8 NOP                       ; No color change
@@ -45,13 +45,13 @@
 0x00C663EC NOP
 0x00C663F0 NOP
 0x00C663F4 NOP
-0x00C6640C BL ksys_skyline_render    ; Draw x = 2, y = 0
+0x00C6640C BL ksys::skyline::RenderDebugScreen     ; Draw x = 2, y = 0
 0x00C66440 NOP                       ; Skip string constructor
                                      ; x:S0 = 2
                                      ; y:S1 = 0
 0x00C6644C FADD S12, S1, S8          ; y:S12 = 2
 0x00C66450 FMOV S11, S0              ; x:S11 = 2
-0x00C66498 BL ksys_skyline_render    ; Draw x = 2, y = 2
+0x00C66498 BL ksys::skyline::RenderDebugScreen     ; Draw x = 2, y = 2
                                      ; x:S11 = 0
 0x00C664A0 NOP                       ; No y change
 0x00C664AC NOP                       ; No color change
@@ -64,17 +64,17 @@
 0x00C664C8 NOP
 0x00C664CC NOP
 0x00C664D0 NOP
-0x00C664E8 BL ksys_skyline_render    ; Draw x = 0, y = 2
+0x00C664E8 BL ksys::skyline::RenderDebugScreen     ; Draw x = 0, y = 2
 0x00C664EC FADD S11, S11, S9         ; x:S11 = -2
                                      ; Save x change
 0x00C6650C STR  S12, [SP, #0x45C]    ; Save y
 0x00C6651C ADD  X0,  SP, #0x430      ; Load textWriter
-0x00C66520 BL ksys_skyline_render    ; Draw x = -2, y = 2 (Extra Call)
+0x00C66520 BL ksys::skyline::RenderDebugScreen     ; Draw x = -2, y = 2 (Extra Call)
 0x00C66524 NOP                       ; Skipping reloading x and y
 0x00C66528 NOP                                     
 0x00C6652C FMOV S10, S11             ; x:S10 = -2
 0x00C66534 FADD S11, S12, S9         ; y:S11 = 0
-0x00C6656C BL ksys_skyline_render    ; Draw x = -2, y = 0
+0x00C6656C BL ksys::skyline::RenderDebugScreen     ; Draw x = -2, y = 0
 0x00C66570 FADD S0,  S10, S8         ; x:S0 = 0
 0x00C66574 FMOV S1,  S11             ; y:S1 = 0
-0x00C665B8 BL ksys_skyline_render    ; Draw x = 0, y = 0
+0x00C665B8 BL ksys::skyline::RenderDebugScreen     ; Draw x = 0, y = 0

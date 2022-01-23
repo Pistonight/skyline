@@ -24,11 +24,7 @@ nn::Result nnServiceCreate(Service* srv, const char* name) {
     void* base = nn::sf::hipc::GetMessageBufferOnTls();
 
     cmifMakeControlRequest(base, 3, 0);
-    //TODO fix manually expanded macro
-    auto r = nn::sf::hipc::SendSyncRequest(svcHandle, base, 0x100);
-    if(R_FAILED(RESULT_CODE(r))){
-        return r;
-    }
+    NN_ABORT_IF_FAIL(nn::sf::hipc::SendSyncRequest(svcHandle, base, 0x100));
 
     CmifResponse resp = {};
     //TODO fix manually expanded macro
@@ -62,7 +58,6 @@ nn::Result Ipc::getOwnProcessHandle(Handle* handleOut) {
     u64 pid;
 
     svcGetProcessId(&pid, 0xFFFF8001);
-    // skyline::utils::writeFile("sd:/tmp/pid.bin", 0, &pid, sizeof(pid));
 
     nnServiceCreate(&srv, "pm:dmnt");
 
@@ -73,12 +68,12 @@ nn::Result Ipc::getOwnProcessHandle(Handle* handleOut) {
         u8 status;
     } out;
 
-    Result rc = nnServiceDispatchInOut(&srv, 65000, pid, out, .out_handle_attrs = {SfOutHandleAttr_HipcCopy},
+    nn::Result result = nnServiceDispatchInOut(&srv, 65000, pid, out, .out_handle_attrs = {SfOutHandleAttr_HipcCopy},
                                        .out_handles = &tmp_handle, );
 
     nnServiceClose(&srv);
 
-    if (R_SUCCEEDED(rc)) {
+    if (result.IsSuccess()) {
         if (handleOut) {
             *handleOut = tmp_handle;
         } else {

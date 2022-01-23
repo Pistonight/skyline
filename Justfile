@@ -4,9 +4,9 @@ IP_FILE := "consoleip.txt"
 
 default: build
 
-# Wrapper for scripts/genHeader.py and scripts/genLinkerScript.py 
+# Wrapper for scripts/genBotwSymbols.py and scripts/genLinkerScript.py 
 ldscript:
-    python3 scripts/genHeader.py    
+    python3 scripts/genBotwSymbols.py    
     python3 scripts/genLinkerScript.py
 
 # Wrapper for scripts/patchNpdm.py
@@ -22,7 +22,7 @@ rebuild: clean build
 relink:
     rm -f skyline{{VERSION}}.nso
     rm -f skyline{{VERSION}}.elf
-    just nso
+    just build
 
 nso:
     make skyline
@@ -66,5 +66,6 @@ ftp FTP_OPTION:
     @if [ ! -f {{IP_FILE}} ]; then echo "Error: Please set your console IP with\n     just setip <IP>"; exit; else python3 scripts/ftpUtil.py {{FTP_OPTION}} {{VERSION}} $(cat {{IP_FILE}}); fi 
 
 findsym SYMBOL:
-    grep "{{SYMBOL}}" build{{VERSION}}/skyline{{VERSION}}.lst
-    grep "{{SYMBOL}}" build{{VERSION}}/skyline{{VERSION}}.map
+    -grep -i "{{SYMBOL}}" build{{VERSION}}/skyline{{VERSION}}.lst
+    -grep -i "{{SYMBOL}}" build{{VERSION}}/skyline{{VERSION}}.map
+    grep -i "{{SYMBOL}}" include/KingSymbols{{VERSION}}.hpp

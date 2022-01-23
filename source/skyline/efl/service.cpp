@@ -7,12 +7,12 @@ namespace skyline::efl {
 
 EflSlService::EflSlService() : m_initSuccessful(false) {
     logger::s_Instance->Log("[EflSlService] Initializing...\n");
-    auto rc = utils::nnServiceCreate(&m_service, EIFFEL_SKYLINE_SERVICE_NAME);
-    if (R_SUCCEEDED(RESULT_CODE(rc))) {
+    nn::Result result = utils::nnServiceCreate(&m_service, EIFFEL_SKYLINE_SERVICE_NAME);
+    if (result.IsSuccess()) {
         m_initSuccessful = true;
         logger::s_Instance->LogFormat("[EflSlService] Initialized");
     } else {
-        logger::s_Instance->LogFormat("[EflSlService] Initialization failed (0x%x)", rc);
+        logger::s_Instance->LogFormat("[EflSlService] Initialization failed (0x%x)", result.GetInnerValueForDebug());
     }
 }
 
@@ -36,7 +36,7 @@ Result EflSlService::Log(const char* moduleName, EiffelLogLevel level, const cha
                                .buffers = {
                                    {moduleName, strlen(moduleName) + 1},
                                    {logContent, strlen(logContent) + 1},
-                               });
+                               }).GetInnerValueForDebug();
 }
 
 Result EflSlService::RegisterPlugin(SlPluginMeta meta) {
@@ -48,7 +48,7 @@ Result EflSlService::RegisterPlugin(SlPluginMeta meta) {
         return INVALID_PLUGIN_NAME;
     }
 
-    return nnServiceDispatchIn(&m_service, EFL_SL_CMD_REGISTER_PLUGIN, meta);
+    return nnServiceDispatchIn(&m_service, EFL_SL_CMD_REGISTER_PLUGIN, meta).GetInnerValueForDebug();
 }
 
 Result EflSlService::RegisterSharedMem(const SlPluginName name, SlPluginSharedMemInfo sharedMemInfo) {
@@ -63,7 +63,7 @@ Result EflSlService::RegisterSharedMem(const SlPluginName name, SlPluginSharedMe
     auto in = EiffelSlRegisterSharedMemIn{{}, sharedMemInfo.size, sharedMemInfo.perm};
     strcpy(in.name, name);
     return nnServiceDispatchIn(&m_service, EFL_SL_CMD_REGISTER_SHARED_MEM, in, .in_num_handles = 1,
-                               .in_handles = {sharedMemInfo.handle});
+                               .in_handles = {sharedMemInfo.handle}).GetInnerValueForDebug();
 }
 
 }  // namespace skyline::efl

@@ -1,7 +1,6 @@
 #pragma once
 
-#include "extra/nn/sf/hipc.h"
-#include "types.h"
+#include "nn/sf/hipc.h"
 #include "nn/types.h"
 
 #ifdef __cplusplus
@@ -62,7 +61,7 @@ NX_INLINE void* nnServiceMakeRequest(Service* s, u32 request_id, u32 context, u3
     return req.data;
 }
 
-NX_INLINE Result nnServiceParseResponse(Service* s, u32 out_size, void** out_data, u32 num_out_objects,
+NX_INLINE nn::Result nnServiceParseResponse(Service* s, u32 out_size, void** out_data, u32 num_out_objects,
                                         Service* out_objects, const SfOutHandleAttrs out_handle_attrs,
                                         Handle* out_handles) {
     void* base = nn::sf::hipc::GetMessageBufferOnTls();
@@ -70,7 +69,9 @@ NX_INLINE Result nnServiceParseResponse(Service* s, u32 out_size, void** out_dat
     CmifResponse res = {};
     bool is_domain = s->object_id != 0;
     Result rc = cmifParseResponse(&res, base, is_domain, out_size);
-    if (R_FAILED(rc)) return rc;
+    if (R_FAILED(rc)) {
+        return nn::result::detail::ResultInternalAccessor::ConstructResult(rc);
+    } 
 
     if (out_size) *out_data = res.data;
 
@@ -90,10 +91,10 @@ NX_INLINE Result nnServiceParseResponse(Service* s, u32 out_size, void** out_dat
     _serviceResponseGetHandle(&res, out_handle_attrs.attr6, &out_handles[6]);
     _serviceResponseGetHandle(&res, out_handle_attrs.attr7, &out_handles[7]);
 
-    return 0;
+    return nn::ResultSuccess();
 }
 
-NX_INLINE Result nnServiceDispatchImpl(Service* s, u32 request_id, const void* in_data, u32 in_data_size,
+NX_INLINE nn::Result nnServiceDispatchImpl(Service* s, u32 request_id, const void* in_data, u32 in_data_size,
                                        void* out_data, u32 out_data_size, SfDispatchParams disp) {
     void* base = nn::sf::hipc::GetMessageBufferOnTls();
     Service srv = *s;
@@ -104,16 +105,16 @@ NX_INLINE Result nnServiceDispatchImpl(Service* s, u32 request_id, const void* i
 
     if (in_data_size) __builtin_memcpy(in, in_data, in_data_size);
 
-    R_TRY(RESULT_CODE(nn::sf::hipc::SendSyncRequest(disp.target_session == INVALID_HANDLE ? s->session : disp.target_session, base,
-                                        0x100)));
+    NN_ABORT_IF_FAIL(nn::sf::hipc::SendSyncRequest(disp.target_session == INVALID_HANDLE ? s->session : disp.target_session, base,
+                                        0x100));
 
     void* out = NULL;
-    R_TRY(nnServiceParseResponse(&srv, out_data_size, &out, disp.out_num_objects, disp.out_objects,
+    NN_ABORT_IF_FAIL(nnServiceParseResponse(&srv, out_data_size, &out, disp.out_num_objects, disp.out_objects,
                                  disp.out_handle_attrs, disp.out_handles));
 
     if (out_data && out_data_size) __builtin_memcpy(out_data, out, out_data_size);
 
-    return 0;
+    return nn::ResultSuccess();
 }
 
 #define nnServiceDispatch(_s, _rid, ...) \
@@ -131,7 +132,7 @@ NX_INLINE Result nnServiceDispatchImpl(Service* s, u32 request_id, const void* i
                                           (SfDispatchParams){__VA_ARGS__})
 
 class Ipc {
-   public:
+public:
     static nn::Result getOwnProcessHandle(Handle*);
 };
 

@@ -1,12 +1,10 @@
 #include "main.hpp"
 
-#include <extra/nn/err.h>
-
 #include "skyline/logger/TcpLogger.hpp"
 #include "skyline/utils/ipc.hpp"
 #include "skyline/utils/cpputils.hpp"
 
-#include "uking/Debug/DebugRender.hpp"
+#include "uking/Debug/DebugSystem.hpp"
 
 // For handling exceptions
 char ALIGNA(0x1000) exception_handler_stack[0x4000];
@@ -27,35 +25,23 @@ void exception_handler(nn::os::UserExceptionInfo* info) {
 }
 
 static skyline::utils::Task* after_romfs_task = new skyline::utils::Task{[]() {
-    // mount sd
-    // nn::os::SleepThread(nn::TimeSpan::FromSeconds(2));
-
-    // nn::fs::FileHandle handle;
-    // int64_t file_size = 0;
-
-    // nn::fs::OpenFile(&handle, "rom:/data.arc", nn::fs::OpenMode_Read);
-    // nn::fs::GetFileSize(&file_size, handle);
-    // nn::fs::CloseFile(handle);
-
     nn::Result rc = nn::fs::MountSdCardForDebug("sd");
     skyline::logger::s_Instance->LogFormat("[skyline_main] Mounted SD (0x%x)", rc);
-
 }};
 
 void stub() {}
 
-Result (*nnFsMountRomImpl)(char const*, void*, unsigned long);
+nn::Result (*nnFsMountRomImpl)(char const*, void*, unsigned long);
 
-Result handleNnFsMountRom(char const* path, void* buffer, unsigned long size) {
-    Result rc = 0;
-    rc = nnFsMountRomImpl(path, buffer, size);
+nn::Result handleNnFsMountRom(char const* path, void* buffer, unsigned long size) {
+    nn::Result result = nnFsMountRomImpl(path, buffer, size);
 
     // start task queue
     skyline::utils::SafeTaskQueue* taskQueue = new skyline::utils::SafeTaskQueue(100);
     taskQueue->startThread(20, 3, 0x4000);
     taskQueue->push(new std::unique_ptr<skyline::utils::Task>(after_romfs_task));
     nn::os::WaitEvent(&after_romfs_task->completionEvent);
-    return rc;
+    return result;
 }
 
 void (*VAbortImpl)(char const*, char const*, char const*, int, Result const*, nn::os::UserExceptionInfo const*, char const*, va_list args);
@@ -97,15 +83,13 @@ void skyline_main() {
     nn::os::SetUserExceptionHandler(exception_handler, exception_handler_stack, sizeof(exception_handler_stack),
                                     &exception_info);
 
-    // BOTW hook
-    //A64HookFunction(reinterpret_cast<void*>(ukingraw::ukr_ZNK5uking2ui16PauseMenuDataMgr15hasRitoSoulPlusEv), reinterpret_cast<void*>(ukingimpl::ReturnTrue), NULL);
-
-    // BOTW: Call this function so it's not removed by the linker
-    ksys_skyline_render(nullptr);
+    // BOTW debugger entry point
+    ksys::skyline::Init();
 
     // hook to prevent the game from double mounting romfs
     A64HookFunction(reinterpret_cast<void*>(nn::fs::MountRom), reinterpret_cast<void*>(handleNnFsMountRom),
                     (void**)&nnFsMountRomImpl);
+    //skyline::hook::initNnFsMountRomHook();
 
     // manually init nn::ro ourselves, then stub it so the game doesn't try again
     nn::ro::Initialize();
@@ -117,28 +101,12 @@ void skyline_main() {
     A64HookFunction(reinterpret_cast<void*>(VAbort_ptr), reinterpret_cast<void*>(handleNnDiagDetailVAbortImpl), (void**)&VAbortImpl);
 
     // mount rom
-    
-
     skyline::logger::s_Instance->LogFormat("[skyline_main] text: 0x%" PRIx64 " | rodata: 0x%" PRIx64
                                            " | data: 0x%" PRIx64 " | bss: 0x%" PRIx64 " | heap: 0x%" PRIx64,
                                            skyline::utils::g_MainTextAddr, skyline::utils::g_MainRodataAddr,
                                            skyline::utils::g_MainDataAddr, skyline::utils::g_MainBssAddr,
                                            skyline::utils::g_MainHeapAddr);
 
-    
-
-    // TODO: experiment more with NVN
-    /*nvnInit(NULL);
-
-    NVNdeviceBuilder deviceBuilder;
-    nvnDeviceBuilderSetDefaults(&deviceBuilder);
-    nvnDeviceBuilderSetFlags(&deviceBuilder, 0);
-
-    NVNdevice device;
-    nvnDeviceInitialize(&device, &deviceBuilder);
-
-    nvnInit(&device); // re-init with our newly acquired device
-    */
 }
 
 extern "C" void skyline_init() {

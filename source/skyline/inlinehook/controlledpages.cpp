@@ -47,13 +47,13 @@ static Result getProcessAddressSpaceInfo(AddressSpaceInfo* out, Handle process_h
     memset(out, 0, sizeof(*out));
 
     /* Retrieve info from kernel. */
-    R_TRY(svcGetInfo(&out->heap_base, InfoType_HeapRegionAddress, process_h, 0));
-    R_TRY(svcGetInfo(&out->heap_size, InfoType_HeapRegionSize, process_h, 0));
-    R_TRY(svcGetInfo(&out->alias_base, InfoType_AliasRegionAddress, process_h, 0));
-    R_TRY(svcGetInfo(&out->alias_size, InfoType_AliasRegionSize, process_h, 0));
+    R_ABORT_IF_FAIL(svcGetInfo(&out->heap_base, InfoType_HeapRegionAddress, process_h, 0));
+    R_ABORT_IF_FAIL(svcGetInfo(&out->heap_size, InfoType_HeapRegionSize, process_h, 0));
+    R_ABORT_IF_FAIL(svcGetInfo(&out->alias_base, InfoType_AliasRegionAddress, process_h, 0));
+    R_ABORT_IF_FAIL(svcGetInfo(&out->alias_size, InfoType_AliasRegionSize, process_h, 0));
 
-    R_TRY(svcGetInfo(&out->aslr_base, InfoType_AslrRegionAddress, process_h, 0));
-    R_TRY(svcGetInfo(&out->aslr_size, InfoType_AslrRegionSize, process_h, 0));
+    R_ABORT_IF_FAIL(svcGetInfo(&out->aslr_base, InfoType_AslrRegionAddress, process_h, 0));
+    R_ABORT_IF_FAIL(svcGetInfo(&out->aslr_size, InfoType_AslrRegionSize, process_h, 0));
 
     out->heap_end = out->heap_base + out->heap_size;
     out->alias_end = out->alias_base + out->alias_size;
@@ -67,7 +67,7 @@ static Result locateMappableSpaceModern(uintptr_t* out_address, size_t size) {
     uintptr_t cur_base = 0, cur_end = 0;
 
     AddressSpaceInfo address_space;
-    R_TRY(getProcessAddressSpaceInfo(&address_space, CUR_PROCESS_HANDLE));
+    R_ABORT_IF_FAIL(getProcessAddressSpaceInfo(&address_space, CUR_PROCESS_HANDLE));
     cur_base = address_space.aslr_base;
     cur_end = cur_base + size;
 

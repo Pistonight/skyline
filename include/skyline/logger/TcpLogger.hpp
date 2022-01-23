@@ -6,7 +6,6 @@
 #include "alloc.h"
 #include "mem.h"
 #include "nn/socket.h"
-#include "extra/nn/socket.h"
 #include "nn/time.h"
 #include "operator.h"
 #include "skyline/inlinehook/And64InlineHook.hpp"

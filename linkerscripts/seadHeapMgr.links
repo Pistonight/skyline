@@ -1,0 +1,3 @@
+// Links 0x02584918 _ZN4sead7HeapMgr12sInstancePtrE (sead::HeapMgr::sInstancePtr)
+// Links KingSymbols150::f__ZNK4sead7HeapMgr14getCurrentHeapEv _ZN4sead7HeapMgr14getCurrentHeapEv (sead::HeapMgr::getCurrentHeap)
+// Links KingSymbols150::f__ZNK4sead7HeapMgr15findContainHeapEPKv _ZNK4sead7HeapMgr15findContainHeapEPKv (sead::HeapMgr::findContainerHeap)
