@@ -19,7 +19,6 @@
 .vscode/
 __pycache__
 build*/
-debug/
 release/
 lib/
 skyline_patch*/
