@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../types.h"
+#include "../../types.h"
 
 typedef u64 NVNcommandHandle;
 typedef u64 NVNdeviceInfo;

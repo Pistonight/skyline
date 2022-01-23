@@ -20,8 +20,7 @@ If you don't want to install `just`, you can open `Justfile` and execute those c
 |`just build`|Build the nso and ips patch|
 |`just nso`|Only build the nso|
 |`just ips`|Only build the ips patch|
-|`just header`|Generate `ukr150.hpp` from `uking_functions.csv`. |
-|`just ldscript`|Generate `syms150.ld` for static linking with uking|
+|`just ldscript`|Generate `syms150.ld`
 |`just npdm`|Patches npdm file|
 |`just clean`|Cleans the nso and ips patch builds|
 |`just cleanall`|In addition to `clean`, also removes the generated files|
@@ -75,17 +74,18 @@ Make sure you have these things installed
  - keystone (Run `pip install keystone-engine`). This is needed to build the ips patch
 
 ### Generated Files
-There are generated files that are no included in the repo and need to be generated before building. Run the command if you need to generate or regenerate any file
-- Run `just header` to generate `ukr150.hpp` from `uking_functions.csv`. This is a header that contains symbols for functions in uking
-- Run `just ldscript` to generate the linker script. The linker script is generated from comments in the headers, including `ukr150.hpp`, so if you regenerated the header, you also need to regenerate the linker script
+#### Linker Script
+The linker script is used for linking with botw symbols. Run `just ldscript` to generate/regenerate it.
 
-Also you need to patch the NPDM file (`main.npdm`) for sys calls.
+If the build doesn't re-link the nso, run `just relink`
+
+#### NPDM
+You need to patch the NPDM file (`main.npdm`) for sys calls.
 1. Copy `main.npdm` from the exefs dump to the root of the repo
 2. run `just npdm`
 
 ### Building
 Run `just` or `just build` to build the project. If you only want to build the skyline nso or the ips patch, run `just nso` or `just ips`
-(If the nso doesn't rebuild after regenrating linker script, run `just rebuild`)
 
 ### Install
 #### FTP Install

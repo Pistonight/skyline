@@ -40,7 +40,7 @@ INCLUDES	:=	include \
  libs/sead/include  \
  libs/agl/include  \
  libs/NintendoSDK/include \
- include/uking \
+ libs/botw/src \
 
 #---------------------------------------------------------------------------------
 # options for code generation

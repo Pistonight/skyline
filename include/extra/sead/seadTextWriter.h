@@ -17,13 +17,13 @@ namespace sead
             virtual ~TextWriter();
 
             void printImpl_(char const*, int, bool, sead::BoundBox2<float>*);
-            /* LinkerHints 0x00b1f868 _ZN4sead10TextWriter6printfEPKcz sead::TextWriter::printf */
+            /* Links KingSymbols150::f_sead__TextWriter__printf _ZN4sead10TextWriter6printfEPKcz (sead::TextWriter::printf) */
             void printf(char const*, ...);
-            /* LinkerHints 0x00b1f868 _ZN4sead10TextWriter6printfEPKDsz sead::TextWriter::printf */
+            /* Links KingSymbols150::f_sead__TextWriter__printf _ZN4sead10TextWriter6printfEPKDsz (sead::TextWriter::printf) */
             void printf(char16_t const*, ...);
             void setScaleFromFontHeight(float);
             void beginDraw();
-            /* LinkerHints 0x00b1f7b8 _ZN4sead10TextWriter13setupGraphicsEPNS_11DrawContextE sead::TextWriter::setupGraphics */
+            /* Links KingSymbols150::f_sead__TextWriter__setupGraphics _ZN4sead10TextWriter13setupGraphicsEPNS_11DrawContextE (sead::TextWriter::setupGraphics) */
             static void setupGraphics(sead::DrawContext*);
 
             sead::Viewport *mViewport;

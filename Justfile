@@ -4,12 +4,9 @@ IP_FILE := "consoleip.txt"
 
 default: build
 
-# Wrapper for scripts/genHeader.py
-header:
-    python3 scripts/genHeader.py
-
-# Wrapper for scripts/genLinkerScript.py 
+# Wrapper for scripts/genHeader.py and scripts/genLinkerScript.py 
 ldscript:
+    python3 scripts/genHeader.py    
     python3 scripts/genLinkerScript.py
 
 # Wrapper for scripts/patchNpdm.py
@@ -21,6 +18,11 @@ build:
     just ips
 
 rebuild: clean build
+
+relink:
+    rm -f skyline{{VERSION}}.nso
+    rm -f skyline{{VERSION}}.elf
+    just nso
 
 nso:
     make skyline
@@ -45,7 +47,7 @@ clean:
 
 # Clean the build output and all generated files
 cleanall: clean
-    rm -f include/ukr{{VERSION}}.hpp
+    rm -f include/KingSymbols{{VERSION}}.hpp
     rm -f linkerscripts/syms{{VERSION}}.ld
     rm -f skyline{{VERSION}}.npdm
     rm -f {{IP_FILE}}
@@ -62,9 +64,6 @@ setip IP:
 # report: get crash reports from console (also deletes them from console)
 ftp FTP_OPTION:
     @if [ ! -f {{IP_FILE}} ]; then echo "Error: Please set your console IP with\n     just setip <IP>"; exit; else python3 scripts/ftpUtil.py {{FTP_OPTION}} {{VERSION}} $(cat {{IP_FILE}}); fi 
-
-getbotw PATH:
-    curl https://raw.githubusercontent.com/zeldaret/botw/master/src/{{PATH}} > include/uking/{{PATH}}
 
 findsym SYMBOL:
     grep "{{SYMBOL}}" build{{VERSION}}/skyline{{VERSION}}.lst
