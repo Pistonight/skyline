@@ -72,7 +72,7 @@ INCLUDE	:=	\
 $(foreach dir,$(ALL_INCLUDE_DIRS),-I$(CURDIR)/$(dir)) \
 $(foreach dir,$(LIBDIRS),-I$(dir)/include)
 # Defines
-DEFINES := -D__SWITCH__ -DSWITCH -DNNSDK -DSkyline_Build_Date="\"$$(date)\""
+DEFINES := -D__SWITCH__ -DSWITCH -DNNSDK -DSKYLINE_DEBUG_BUILD="\"$(SKYLINE_DEBUG_BUILD)\""
 # Architecture
 ARCH	:= -march=armv8-a -mtune=cortex-a57 -mtp=soft -fPIC -ftls-model=local-exec
 # C flags

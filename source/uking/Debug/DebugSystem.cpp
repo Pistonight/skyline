@@ -1,12 +1,10 @@
 #include "uking/Debug/DebugSystem.hpp"
+#include "uking/Debug/DebugVersion.hpp"
 
 #include <KingSystem/System/SystemTimers.h>
 #include <KingSystem/ActorSystem/actBaseProcMgr.h>
-#include <skyline/inlinehook/And64InlineHook.hpp>
 
 #include <KingSymbols150.hpp>
-
-void (*BaseProcMgr_RegisterProc_Original)(ksys::act::BaseProcMgr*, ksys::act::BaseProc&);
 
 namespace ksys::skyline{
 // Debug Data
@@ -14,22 +12,11 @@ static s32 sUnloadCheckFrame;
 static act::BaseProc* sLastElevator;
 
 void Init(){
-
     //Calling this so the function is not removed by linker
     RenderDebugScreen(nullptr);
     ComputeDebugData();
     sUnloadCheckFrame = -1;
     sLastElevator = nullptr;
-    
-    //Hook act::BaseProcMgr::registerProc
-    //A64HookFunction(reinterpret_cast<void*>(KingSymbols150::f__ZN4ksys3act11BaseProcMgr12registerProcERNS0_8BaseProcE), reinterpret_cast<void*>(BaseProcMgr_RegisterProc_Hook), reinterpret_cast<void**>(&BaseProcMgr_RegisterProc_Original));
-}
-
-void BaseProcMgr_RegisterProc_Hook(act::BaseProcMgr* _this, act::BaseProc& proc){
-    if(proc.getName()=="DgnObj_EntranceElevator_A_01"){
-        sLastElevator = &proc;
-    }
-    BaseProcMgr_RegisterProc_Original(_this, proc);
 }
 
 void ComputeDebugData(){
@@ -55,11 +42,7 @@ void RenderDebugScreen(sead::TextWriter* textWriter){
         // Dummy check so we could call this function in skyline so that the linker does not optimize it out
         return;
     }
-#ifdef Skyline_Build_Date
-    textWriter->printf("Skyline (%s)\n", Skyline_Build_Date);
-#else
-    textWriter->printf("Skyline (Build Unknown)\n");
-#endif
+    textWriter->printf("Skyline (%s)\n", GetDebuggerBuildVersion());
 
     
     ksys::SystemTimers* systemTimers = ksys::SystemTimers::instance();

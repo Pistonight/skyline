@@ -9,6 +9,4 @@ void Init();
 void ComputeDebugData(); 
 void RenderDebugScreen(sead::TextWriter* textWriter);
 
-void BaseProcMgr_RegisterProc_Hook(act::BaseProcMgr* _this, act::BaseProc& proc);
-
 }
