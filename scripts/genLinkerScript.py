@@ -64,8 +64,17 @@ def extractComments(line):
 
 def scanFileForLinkerHints(ldAddrData, ldSymbData, pathStr, headerFile):
     headerLines = headerFile.readlines()
+    savedLines = ""
     for line in headerLines:
-        lineContent = parseLine(line.strip()) # Part of the line without comment symbols
+        lineStripped = line.strip()
+        # Process multi line
+        if lineStripped.endswith("\\"):
+            savedLines += lineStripped[:-1]
+            continue
+
+        lineStripped = savedLines + lineStripped
+        savedLines = ""
+        lineContent = parseLine(lineStripped) # Part of the line without comment symbols
         if lineContent == None:
             continue
         

@@ -1,4 +1,6 @@
-// Links KingSymbols150::f__ZN4ksys3act11BaseProcMgr7getProcERKN4sead14SafeStringBaseIcEENS2_12TypedBitFlagINS1_10ProcFilterEiEE _ZN4ksys3act11BaseProcMgr7getProcERKN4sead14SafeStringBaseIcEENS2_12TypedBitFlagINS1_10ProcFilterEiEE
-// ^ ksys::act::BaseProcMgr::getProc(string, flag)
+// Links \
+   KingSymbols150::f__ZN4ksys3act11BaseProcMgr7getProcERKN4sead14SafeStringBaseIcEENS2_12TypedBitFlagINS1_10ProcFilterEiEE \
+   _ZN4ksys3act11BaseProcMgr7getProcERKN4sead14SafeStringBaseIcEENS2_12TypedBitFlagINS1_10ProcFilterEiEE \
+   (ksys::act::BaseProcMgr::getProc(string, flag))
 // Links 0x02650608 _ZN4ksys3act11BaseProcMgr9sInstanceE
 // ^ ksys::act::BaseProcMgr::sInstance
