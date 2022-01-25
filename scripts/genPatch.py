@@ -218,7 +218,7 @@ configPath = os.path.join(PATCH_DIR, buildVersion + PATCH_CONFIG_EXTENSION)
 patchConfig = initConfig(configPath)
 patchList = {}
 
-SLMapFilePath = os.path.join("build" + buildVersion, os.path.basename(os.getcwd()) + buildVersion + ".map")
+SLMapFilePath = os.path.join("build" + buildVersion, os.path.basename(os.getcwd()) + ".map")
 with open(SLMapFilePath, 'r') as f:
     SLMapFile = f.read()
 
@@ -227,7 +227,7 @@ for file in os.listdir(PATCH_DIR):
         addPatchFromFile(os.path.join(PATCH_DIR, file))
 
 for nso in patchList:
-    ipsOutPath = patchConfig["build_id"][nso] + IPS_FORMAT
+    ipsOutPath =os.path.join("build" + buildVersion, patchConfig["build_id"][nso] + IPS_FORMAT)
     with open(ipsOutPath, 'wb') as ipsFile:
         ipsFile.write(IPS_HEADER_MAGIC)
         for patch in patchList[nso]:

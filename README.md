@@ -18,10 +18,8 @@ If you don't want to install `just`, you can open `Justfile` and execute those c
 |Command|Description|
 |-|-|
 |`just build`|Build the nso and ips patch|
-|`just nso`|Only build the nso|
 |`just ips`|Only build the ips patch|
 |`just ldscript`|Generate `syms150.ld`
-|`just npdm`|Patches npdm file|
 |`just clean`|Cleans the nso and ips patch builds|
 |`just cleanall`|In addition to `clean`, also removes the generated files|
 |`just diffrom`|Compare 1.5.0 and 1.6.0 romfs and generates `v160_v150_change.txt`|
@@ -35,7 +33,7 @@ If you don't want to install `just`, you can open `Justfile` and execute those c
 
 You need the following files before continuing. These files are not provided by the project
 - `primitive_drawer_nvn_shader.bin` from the romfs dump of another game. This file is removed from BOTW.
-- The exefs dump of v1.5.0 of the game (only `main.npdm` is needed)
+- The exefs dump of v1.5.0 of the game **(only if you have v1.6.0 installed)**
 - The romfs dump of v1.5.0 of the game **(only if you have v1.6.0 installed)**
 
 You don't need the second if you already have v1.5.0 installed.
@@ -79,13 +77,8 @@ The linker script is used for linking with botw symbols. Run `just ldscript` to 
 
 If the build doesn't re-link the nso, run `just relink`
 
-#### NPDM
-You need to patch the NPDM file (`main.npdm`) for sys calls.
-1. Copy `main.npdm` from the exefs dump to the root of the repo
-2. run `just npdm`
-
 ### Building
-Run `just` or `just build` to build the project. If you only want to build the skyline nso or the ips patch, run `just nso` or `just ips`
+Run `just` or `just build` to build the project. If you only want to build the ips patch, run `just ips`
 
 ### Install
 #### FTP Install
@@ -101,8 +94,10 @@ If you want to remove the installation, run `just ftp clean`
 
 #### Manual Install
 
-1. Copy `skyline150.nso` to `/atmosphere/contents/01007EF00011E000/exefs` and rename it `subsdk9`
-2. Copy `skyline150.npdm` to `/atmosphere/contents/01007EF00011E000/exefs` and rename it `main.npdm`
+To install manually, copy the following files from the build directory (e.g. `build150`) to your console.
+
+1. Copy `skyline.nso` to `/atmosphere/contents/01007EF00011E000/exefs` and rename it `subsdk9`
+2. Copy `skyline.npdm` to `/atmosphere/contents/01007EF00011E000/exefs` and rename it `main.npdm`
 3. Copy `16A91992BBA71201E98756F3BC8F5D2F.ips` to `/atmosphere/exefs_patches/skylinebotw`
 
 

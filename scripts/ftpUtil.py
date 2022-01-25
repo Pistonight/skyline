@@ -1,5 +1,5 @@
 # Performs file actions on console via FTP
-# Usage: ftpAction.py <deploy> version ip
+# Usage: ftpUtil.py command version ip
 from ftplib import FTP
 import os
 import sys
@@ -8,7 +8,7 @@ import sys
 PATCH_DIRNAME = "skylinebotw"
 
 if len(sys.argv) != 4:
-    print("Usage: ftpAction.py <deploy|clean|report> version ip")
+    print("Usage: ftpUtil.py <deploy|clean|report> version ip")
     sys.exit(-1)
 
 # Ftp wrapper
@@ -19,7 +19,9 @@ class FtpWrapper:
         self.port = port
 
     def connect(self):
+        print(f'Connecting to {self.host}:{self.port}... ', end='')
         self.ftp.connect(self.host, self.port)
+        print('Connected!')
     
     def listdirs(self,_path):
         file_list, dirs, nondirs = [], [], []
@@ -122,9 +124,11 @@ class FtpWrapper:
 
 def scanForPatches():
     patches = []
-    dirContent = os.listdir(curDir)
+    patchDir = f"build{version}"
+    dirContent = os.listdir(patchDir)
     for subPathName in dirContent:
-        if os.path.isfile(os.path.join(curDir, subPathName)) and subPathName.endswith(".ips"):
+        patchPath = os.path.join(patchDir, subPathName)
+        if os.path.isfile(patchPath) and subPathName.endswith(".ips"):
             patches.append(subPathName)
     return patches
 
@@ -135,20 +139,21 @@ def deploy(ftpw):
     if len(patches) > 0:
         ftpw.ensurePath(["atmosphere", "exefs_patches", PATCH_DIRNAME])
 
-    for patchPath in patches:
+    for patchName in patches:
+        patchPath = os.path.join(f"build{version}", patchName)
         if os.path.exists(patchPath):
-            sdPath = f'/atmosphere/exefs_patches/{PATCH_DIRNAME}/{patchPath}'
+            sdPath = f'/atmosphere/exefs_patches/{PATCH_DIRNAME}/{patchName}'
             ftpw.sendFile(patchPath, sdPath)
 
     # exefs
     ftpw.ensurePath(["atmosphere", "contents", "01007EF00011E000", "exefs"])
-    binaryPath = f'{os.path.basename(os.getcwd())}{version}.nso'
+    binaryPath = f'build{version}/{os.path.basename(os.getcwd())}.nso'
     sdPath = '/atmosphere/contents/01007EF00011E000/exefs/subsdk9'
     ftpw.sendFile(binaryPath, sdPath)
 
-    metaPath = f'{os.path.basename(os.getcwd())}{version}.npdm'
+    npdmPath = f'build{version}/{os.path.basename(os.getcwd())}.npdm'
     sdPath = '/atmosphere/contents/01007EF00011E000/exefs/main.npdm'
-    ftpw.sendFile(metaPath, sdPath)
+    ftpw.sendFile(npdmPath, sdPath)
 
 # Clean
 def clean(ftpw):
@@ -171,18 +176,18 @@ if '.' not in consoleIP:
 
 consolePort = 5000
 curDir = os.curdir
-
-
-print(f'Connecting to {consoleIP}:{consolePort}... ', end='')
 ftpw = FtpWrapper(consoleIP, consolePort)
-ftpw.connect()
-print('Connected!')
 
 if command == "deploy":
+    ftpw.connect()
     deploy(ftpw)
 elif command == "clean":
+    ftpw.connect()
     clean(ftpw)
 elif command == "report":
+    ftpw.connect()
     report(ftpw)
-
+else:
+    print("Unknown command:", command)
+    sys.exit(-1)
 

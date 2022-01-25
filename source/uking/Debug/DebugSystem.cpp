@@ -1,6 +1,6 @@
 #include "uking/Debug/DebugSystem.hpp"
-#include "uking/Debug/Instances.hpp"
 
+#include <KingSystem/System/SystemTimers.h>
 #include <KingSystem/ActorSystem/actBaseProcMgr.h>
 #include <skyline/inlinehook/And64InlineHook.hpp>
 
@@ -14,6 +14,7 @@ static s32 sUnloadCheckFrame;
 static act::BaseProc* sLastElevator;
 
 void Init(){
+
     //Calling this so the function is not removed by linker
     RenderDebugScreen(nullptr);
     ComputeDebugData();
@@ -32,11 +33,11 @@ void BaseProcMgr_RegisterProc_Hook(act::BaseProcMgr* _this, act::BaseProc& proc)
 }
 
 void ComputeDebugData(){
-    ksys::SystemTimers* systemTimers = ksys::skyline::Global::sSystemTimersInstance;
+    ksys::SystemTimers* systemTimers = ksys::SystemTimers::instance();
     if(systemTimers){
         sUnloadCheckFrame = systemTimers->mFrameCounter % 30;
         //if(systemTimers->mFrameCounter > 1800) {
-            act::BaseProcMgr* baseProcMgr = ksys::skyline::Global::sBaseProcMgrInstance;
+            act::BaseProcMgr* baseProcMgr = ksys::act::BaseProcMgr::instance();
             if(baseProcMgr){
                 sLastElevator = baseProcMgr->getProc("DgnObj_EntranceElevator_A_01", {});
             }else{
@@ -54,10 +55,14 @@ void RenderDebugScreen(sead::TextWriter* textWriter){
         // Dummy check so we could call this function in skyline so that the linker does not optimize it out
         return;
     }
-    textWriter->printf("Skyline\n");
+#ifdef Skyline_Build_Date
+    textWriter->printf("Skyline (%s)\n", Skyline_Build_Date);
+#else
+    textWriter->printf("Skyline (Build Unknown)\n");
+#endif
 
     
-    ksys::SystemTimers* systemTimers = ksys::skyline::Global::sSystemTimersInstance;
+    ksys::SystemTimers* systemTimers = ksys::SystemTimers::instance();
     textWriter->printf("ksys::SystemTimers 0x%08x\n", systemTimers);
     if(systemTimers){
         textWriter->printf("    mFrameCounter     %d\n", systemTimers->mFrameCounter);
@@ -72,7 +77,7 @@ void RenderDebugScreen(sead::TextWriter* textWriter){
     }
     
     
-    ksys::act::BaseProcMgr* baseProcMgr = ksys::skyline::Global::sBaseProcMgrInstance;
+    ksys::act::BaseProcMgr* baseProcMgr = ksys::act::BaseProcMgr::instance();
     textWriter->printf("ksys::act::BaseProcMgr 0x%08x\n", baseProcMgr);
     if(sLastElevator){
         textWriter->printf("sLastElevator 0x%08x\n", sLastElevator);

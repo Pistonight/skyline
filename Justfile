@@ -1,6 +1,10 @@
-# Version (1.5.0)
-VERSION := "150"
-IP_FILE := "consoleip.txt"
+
+IP_FILE   := "consoleip.txt"
+# Export these to make them available for make
+# Version. 150 means v1.5.0. This is here in case we want to support botw v1.6.0 later
+export VERSION   := "150"
+export BUILD_DIR := "build" + VERSION
+export BASENAME  := "skyline"
 
 default: build
 
@@ -9,23 +13,15 @@ ldscript:
     python3 scripts/genBotwSymbols.py    
     python3 scripts/genLinkerScript.py
 
-# Wrapper for scripts/patchNpdm.py
-npdm:
-    python3 scripts/patchNpdm.py main.npdm skyline{{VERSION}}.npdm
-
 build:
-    just nso
+    make build
     just ips
 
 rebuild: clean build
 
 relink:
-    rm -f skyline{{VERSION}}.nso
-    rm -f skyline{{VERSION}}.elf
+    rm -f {{BUILD_DIR}}/{{BASENAME}}*
     just build
-
-nso:
-    make skyline
 
 # Wrapper for scripts/genPatch.py
 ips:
@@ -43,13 +39,11 @@ minrom:
 # Cleans the elf and ips
 clean:
     make clean
-    rm -f *.ips
 
 # Clean the build output and all generated files
 cleanall: clean
     rm -f include/KingSymbols{{VERSION}}.hpp
     rm -f linkerscripts/syms{{VERSION}}.ld
-    rm -f skyline{{VERSION}}.npdm
     rm -f {{IP_FILE}}
     rm -rf romfsmin/
     rm -rf crash_reports/
@@ -66,6 +60,6 @@ ftp FTP_OPTION:
     @if [ ! -f {{IP_FILE}} ]; then echo "Error: Please set your console IP with\n     just setip <IP>"; exit; else python3 scripts/ftpUtil.py {{FTP_OPTION}} {{VERSION}} $(cat {{IP_FILE}}); fi 
 
 findsym SYMBOL:
-    -grep -i "{{SYMBOL}}" build{{VERSION}}/skyline{{VERSION}}.lst
-    -grep -i "{{SYMBOL}}" build{{VERSION}}/skyline{{VERSION}}.map
+    -grep -i "{{SYMBOL}}" {{BUILD_DIR}}/{{BASENAME}}.lst
+    -grep -i "{{SYMBOL}}" {{BUILD_DIR}}/{{BASENAME}}.map
     grep -i "{{SYMBOL}}" include/KingSymbols{{VERSION}}.hpp
