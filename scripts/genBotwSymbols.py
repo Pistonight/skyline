@@ -37,9 +37,9 @@ def addFunctionDeclaration(hppLines, addrStr, funcName):
     hppLines.append(declaration)
 
 def addDataDeclaration(hppLines, addrStr, dataName):
-    cleanName = cleanDataName(funcName)
+    cleanName = cleanDataName(dataName)
     mangledName = mangleDataName(cleanName)
-    comment = f"/* {LINKER_HINTS} {addrStr} {mangledName} ({funcName}) */\n"
+    comment = f"/* {LINKER_HINTS} {addrStr} {mangledName} ({dataName}) */\n"
     declaration = f"extern void* {cleanName};\n"
 
     hppLines.append(comment)
@@ -52,7 +52,7 @@ def cleanDataName(dataName):
     return DATA_PREFIX + cleanSymbolName(dataName)
 
 def cleanSymbolName(name):
-    name = funcName.replace("::", "__")
+    name = name.replace("::", "__")
     name = name.replace(".", "_")
     return name
 

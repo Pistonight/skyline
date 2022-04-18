@@ -101,3 +101,15 @@ To install manually, copy the following files from the build directory (e.g. `bu
 3. Copy `16A91992BBA71201E98756F3BC8F5D2F.ips` to `/atmosphere/exefs_patches/skylinebotw`
 
 
+# Link with botw
+Follow these steps to link to a botw symbol
+1. Find the symbol. Check if it is listed in `botw/data/data_symbols.csv`. If the symbol is listed, skip to step 7
+2. If the symbol is not listed. Use the symbol in the code. An easy way to do this is print it in `ksys::skyline::RenderDebugScreen`
+3. `just build`
+4. Load `skyline.elf` in IDA or a dissassembler to find the mangled name for the symbol. For example, `_ZN4sead7HeapMgr10sRootHeapsE`. Look at where you used the symbol in code
+5. Find the address of the symbol to link to and list it in `data_symbols.csv` (PR to `botw` later)
+6. `just ldscript`
+7. Find the symbol in `KingSymbols150.hpp`. You can use `just findsym <symbol>`
+8. Add the link definition in one of the `.links` file in `linkerscripts`. 
+9. `just ldscript relink`
+10. Load `skyline.elf` again to make sure it's linked correctly.

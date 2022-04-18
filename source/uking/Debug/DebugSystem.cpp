@@ -1,5 +1,7 @@
 #include "uking/Debug/DebugSystem.hpp"
 #include "uking/Debug/DebugVersion.hpp"
+#include <heap/seadExpHeap.h>
+#include <heap/seadHeapMgr.h>
 
 #include <KingSystem/System/SystemTimers.h>
 #include <KingSystem/ActorSystem/actBaseProcMgr.h>
@@ -10,6 +12,7 @@ namespace ksys::skyline{
 // Debug Data
 static s32 sUnloadCheckFrame;
 static act::BaseProc* sLastElevator;
+static sead::ExpHeap* sSkylineHeap;
 
 void Init(){
     //Calling this so the function is not removed by linker
@@ -17,6 +20,11 @@ void Init(){
     ComputeDebugData();
     sUnloadCheckFrame = -1;
     sLastElevator = nullptr;
+
+    // Create a heap
+    auto rootHeap = sead::HeapMgr::getRootHeaps()[0];
+    sSkylineHeap = sead::ExpHeap::create(33554432u /*32MB*/, "SkylineHeap", rootHeap, 0x1000, sead::ExpHeap::cHeapDirection_Forward, false);
+    
 }
 
 void ComputeDebugData(){
@@ -43,7 +51,10 @@ void RenderDebugScreen(sead::TextWriter* textWriter){
         return;
     }
     textWriter->printf("Skyline (%s)\n", GetDebuggerBuildVersion());
-
+    textWriter->printf("Heap 0x%08x", sSkylineHeap);
+    if(sSkylineHeap){
+        textWriter->printf("(%08x/%08x Free)", sSkylineHeap->getFreeSize(), sSkylineHeap->getSize());
+    }
     
     ksys::SystemTimers* systemTimers = ksys::SystemTimers::instance();
     textWriter->printf("ksys::SystemTimers 0x%08x\n", systemTimers);

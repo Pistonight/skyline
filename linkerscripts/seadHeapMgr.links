@@ -1,2 +1,3 @@
 // Links KingSymbols150::f__ZNK4sead7HeapMgr14getCurrentHeapEv _ZN4sead7HeapMgr14getCurrentHeapEv (sead::HeapMgr::getCurrentHeap)
 // Links KingSymbols150::f__ZNK4sead7HeapMgr15findContainHeapEPKv _ZNK4sead7HeapMgr15findContainHeapEPKv (sead::HeapMgr::findContainerHeap)
+// Links KingSymbols150::d__ZN4sead7HeapMgr10sRootHeapsE _ZN4sead7HeapMgr10sRootHeapsE (sead::HeapMgr::sRootHeaps)
