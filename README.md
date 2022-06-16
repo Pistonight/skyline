@@ -1,6 +1,8 @@
 # Skyline for BOTW
 A patch for Breath of the Wild (Switch) that adds debug capability to the executable. 
 
+**This project is being continued as https://github.com/iTNTPiston/botw-igd**
+
 This project is based on:
  - [skyline-dev/skyline](https://github.com/skyline-dev/skyline) for hooking and patching
  - [zeldaret/botw](https://github.com/zeldaret/botw) for linking to botw
